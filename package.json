@@ -1,0 +1,31 @@
+{
+  "name": "forkify",
+  "version": "1.0.0",
+  "description": "Find the recipe you love",
+  "scripts": {
+    "start": "parcel index.html",
+    "build": "parcel build index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aman50/Forkify.git"
+  },
+  "keywords": [
+    "javascript",
+    "module",
+    "sass",
+    "grid",
+    "flex",
+    "animations"
+  ],
+  "author": "Aman Bhalla",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Aman50/Forkify/issues"
+  },
+  "homepage": "https://github.com/Aman50/Forkify#readme",
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.8.2",
+    "parcel": "^2.8.2"
+  }
+}
