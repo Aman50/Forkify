@@ -1,9 +1,12 @@
 import * as config from './config.js';
 import * as helper from './helpers.js';
 
-export const model = {
+export const state = {
   recipe: {},
-  search: [],
+  search: {
+    query: '',
+    results: []
+  },
   bookmarks: []
 };
 
@@ -27,8 +30,26 @@ export const fetchRecipe = async function (recipeId) {
       recipe.cookingTime = recipe.cooking_time;
       delete recipe.cooking_time;
     }
-    model.recipe = recipe;
+    state.recipe = recipe;
   } catch (error) {
+    throw error;
+  }
+};
+
+
+export const fetchSearchResults = async function(query) {
+  try {
+    const res = await helper.submitGetRequest(`${config.API_URL}?search=${query}`);
+    state.search.query = query;
+    state.search.results = res.data.recipes.map(result => {
+      const returnVal = result;
+      if (Object.keys(returnVal).includes('image_url')) {
+        returnVal.imageUrl = returnVal.image_url;
+        delete returnVal.image_url;
+      }
+      return returnVal;
+    });
+  } catch(error) {
     throw error;
   }
 };

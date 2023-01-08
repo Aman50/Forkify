@@ -1,4 +1,5 @@
 import recipeView from './views/recipeView.js';
+import searchView from './views/searchView.js';
 import * as model from './model.js';
 import eventStore from './pubSub.js';
 
@@ -19,16 +20,29 @@ const controlRecipe = async function() {
     };
 
     await model.fetchRecipe(recipeId);
-    recipeView.render(model.model.recipe);
+    recipeView.render(model.state.recipe);
   } catch (error) {
     console.log(error);
     recipeView.renderError(error);
   }
 };
 
+const controlSearch = async function() {
+  try {
+    const searchQuery = searchView.getQuery();
+
+    if (!searchQuery) return;
+
+    await model.fetchSearchResults(searchQuery);
+    console.log(model.state.search);
+  } catch(error) {
+    console.log(error);
+  }
+}
+
 const init = function() {
   ['recipeView.load', 'recipeView.hashchange'].forEach(event => eventStore.subscribe(event, controlRecipe));
-
+  ['searchView.submit'].forEach(event => eventStore.subscribe(event, controlSearch));
 }
 
 init();
