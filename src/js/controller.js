@@ -1,5 +1,6 @@
 import recipeView from './views/recipeView.js';
 import * as model from './model.js';
+import eventStore from './pubSub.js';
 
 import "core-js/stable";
 import "regenerator-runtime/runtime";
@@ -21,10 +22,13 @@ const controlRecipe = async function() {
     recipeView.render(model.model.recipe);
   } catch (error) {
     console.log(error);
-    recipeView.renderError();
+    recipeView.renderError(error);
   }
 };
 
+const init = function() {
+  ['recipeView.load', 'recipeView.hashchange'].forEach(event => eventStore.subscribe(event, controlRecipe));
 
+}
 
-['load', 'hashchange'].forEach(ev => window.addEventListener(ev, controlRecipe));
+init();

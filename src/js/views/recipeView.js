@@ -1,9 +1,16 @@
 import icons from "url:../../img/icons.svg";
 import { Fraction } from 'fraction.js';
+import eventStore from '../pubSub.js';
 
 class RecipeView {
   #parentEl = document.querySelector(".recipe");
   #data;
+  #error = 'An Error occurred while fetching the recipe.';
+  #message = 'Start by searching for a recipe or an ingredient. Have fun!';
+
+  constructor() {
+      ['load', 'hashchange'].forEach(ev => window.addEventListener(ev, eventStore.publish.bind(eventStore, `recipeView.${ev}`)));
+  }
 
   render(recipe) {
     this.#data = recipe;
@@ -28,7 +35,7 @@ class RecipeView {
     this.#parentEl.insertAdjacentHTML("afterbegin", spinnerEl);
   }
 
-  renderDefaultMessage() {
+  renderMessage(message = this.#message) {
     const messageEl = `
         <div class="message">
           <div>
@@ -36,7 +43,7 @@ class RecipeView {
               <use href="${icons}#icon-smile"></use>
             </svg>
           </div>
-          <p>Start by searching for a recipe or an ingredient. Have fun!</p>
+          <p>${message}</p>
         </div>
         `;
 
@@ -44,7 +51,7 @@ class RecipeView {
     this.#parentEl.insertAdjacentHTML("afterbegin", messageEl);
   }
 
-  renderError() {
+  renderError(error = this.#error) {
     const errorEl = `
       <div class="error">
         <div>
@@ -52,7 +59,7 @@ class RecipeView {
                 <use href="${icons}#icon-alert-triangle"></use>
             </svg>
         </div>
-        <p>An Error occurred while fetching the recipe. Please try refreshing the page.</p>
+        <p>${error.status === 400 ? 'Please check the recipe ID' : error}</p>
       </div>
     `;
 

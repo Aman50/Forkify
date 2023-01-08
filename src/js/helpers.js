@@ -14,7 +14,9 @@ export const submitGetRequest = async function (url) {
       const data = await res.json();
   
       if (!res.ok) {
-        throw new Error(`${data.message} (${res.status})`);
+        const error = new Error(`${data.message} (${res.status})`);
+        error.status = res.status;
+        throw error;
       }
       return data;
     } catch (error) {
