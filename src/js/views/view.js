@@ -25,9 +25,7 @@ export default class View {
 
       update(data) {
         this._data = data;
-    
-        if (!data || (Array.isArray(this._data) && this._data.length === 0)) return this.renderError();
-    
+        
         const dataEl = this._constructHTML();
     
         this._compareAndUpdateDOM(dataEl);

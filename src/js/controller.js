@@ -28,6 +28,9 @@ const controlRecipe = async function() {
 
     await model.fetchRecipe(recipeId);
     recipeView.render(model.state.recipe);
+
+    // If search results, then highlight the active one, else don't render anything
+    seatchResultsView.update(null);
   } catch (error) {
     recipeView.renderError(error);
   }
