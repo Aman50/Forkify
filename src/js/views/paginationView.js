@@ -39,7 +39,8 @@ export class PaginationView extends View {
             </button>
             `
         }
-
+        
+        // Rendering next button
         if (currPage < totalPages) {
             markup += `
             <button class="btn--inline pagination__btn--next" data-new-page="${currPage + 1}">

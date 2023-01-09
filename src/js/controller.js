@@ -44,21 +44,29 @@ const controlSearch = async function() {
     await model.fetchSearchResults(searchQuery);
     seatchResultsView.render(model.getResultsForPage(1));
     paginationView.render(model.state);
+
   } catch(error) {
     seatchResultsView.renderError();
   }
 }
 
-const moveToNewPage = function(newPageNum) {
+const controlPaginationNewPage = function(newPageNum) {
   seatchResultsView.renderSpinner();
   seatchResultsView.render(model.getResultsForPage(newPageNum));
   paginationView.render(model.state);
 }
 
+const controlServings = function(newServingSize) {
+  model.updateServings(newServingSize);
+
+  recipeView.render(model.state.recipe);
+}
+
 const init = function() {
   ['recipeView.load', 'recipeView.hashchange'].forEach(event => eventStore.subscribe(event, controlRecipe));
   ['searchView.submit'].forEach(event => eventStore.subscribe(event, controlSearch));
-  ['paginationView.click'].forEach(event => eventStore.subscribe(event, moveToNewPage));
+  ['paginationView.click'].forEach(event => eventStore.subscribe(event, controlPaginationNewPage));
+  ['servings.update'].forEach(event => eventStore.subscribe(event, controlServings));
 }
 
 init();
