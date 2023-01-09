@@ -65,11 +65,19 @@ const controlServings = function(newServingSize) {
   recipeView.update(model.state.recipe);
 }
 
+
+const controlBookmark = function(recipe) {
+  model.toggleBookmark(recipe);
+
+  recipeView.update(model.state.recipe);
+}
+
 const init = function() {
   ['recipeView.load', 'recipeView.hashchange'].forEach(event => eventStore.subscribe(event, controlRecipe));
   ['searchView.submit'].forEach(event => eventStore.subscribe(event, controlSearch));
   ['paginationView.click'].forEach(event => eventStore.subscribe(event, controlPaginationNewPage));
   ['servings.update'].forEach(event => eventStore.subscribe(event, controlServings));
+  ['bookmark.click'].forEach(event => eventStore.subscribe(event, controlBookmark));
 }
 
 init();

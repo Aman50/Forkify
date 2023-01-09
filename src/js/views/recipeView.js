@@ -15,18 +15,33 @@ class RecipeView extends View {
     
       // Event Delegation
       this._parentEl.addEventListener('click', (e) => {
-        const btn = e.target.closest('.btn--tiny');
-
-        if (!btn) return;
-
-        let { servingsTo } = btn.dataset;
-
-        servingsTo = +servingsTo;
-
-        if (servingsTo < 1) return;
-
-        eventStore.publish('servings.update', servingsTo);
+        this._updateServingsEvent(e);
+        this._toggleBookmark(e);
       });
+  }
+
+  _updateServingsEvent(e) {
+    const btn = e.target.closest('.btn--tiny');
+
+    if (!btn) return;
+
+    let { servingsTo } = btn.dataset;
+
+    servingsTo = +servingsTo;
+
+    if (servingsTo < 1) return;
+
+    eventStore.publish('servings.update', servingsTo);
+  }
+  
+  _toggleBookmark(e) {
+    const btn = e.target.closest('.btn--bookmark');
+
+    if (!btn) return;
+
+    ['bookmark.click'].forEach(event => eventStore.publish(event, this._data));
+
+
   }
 
 
@@ -75,7 +90,7 @@ class RecipeView extends View {
               <use href="${icons}#icon-user"></use>
             </svg>
           </div>
-          <button class="btn--round">
+          <button class="btn--round btn--bookmark">
             <svg class="">
               <use href="${icons}#icon-bookmark${this._data.bookmarked ? '-fill' : ''}"></use>
             </svg>

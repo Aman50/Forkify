@@ -42,7 +42,7 @@ export default class View {
           const currentElement = currentElements[index];
           
           // Checking for difference in textContent
-          if (!newElement.isEqualNode(currentElement) && newElement.firstChild.nodeValue.trim() !== '') {
+          if (!newElement.isEqualNode(currentElement) && newElement.firstChild?.nodeValue.trim() !== '') {
             currentElement.textContent = newElement.textContent;
           }
 
