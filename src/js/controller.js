@@ -1,11 +1,18 @@
 import recipeView from './views/recipeView.js';
 import searchView from './views/searchView.js';
+import seatchResultsView from './views/searchResultsView.js';
+import paginationView from './views/paginationView';
+
 import * as model from './model.js';
 import eventStore from './pubSub.js';
 
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 
+// HMR
+if (module.hot) {
+  module.hot.accept();
+}
 
 const controlRecipe = async function() {
   try {
@@ -15,14 +22,13 @@ const controlRecipe = async function() {
     
     // Guard clause
     if (!recipeId) {
-      recipeView.renderDefaultMessage();
+      recipeView.renderMessage();
       return;
     };
 
     await model.fetchRecipe(recipeId);
     recipeView.render(model.state.recipe);
   } catch (error) {
-    console.log(error);
     recipeView.renderError(error);
   }
 };
@@ -31,18 +37,28 @@ const controlSearch = async function() {
   try {
     const searchQuery = searchView.getQuery();
 
-    if (!searchQuery) return;
+    if (!searchQuery) return searchResultsView.renderMessage();
+
+    seatchResultsView.renderSpinner();
 
     await model.fetchSearchResults(searchQuery);
-    console.log(model.state.search);
+    seatchResultsView.render(model.getResultsForPage(1));
+    paginationView.render(model.state);
   } catch(error) {
-    console.log(error);
+    seatchResultsView.renderError();
   }
+}
+
+const moveToNewPage = function(newPageNum) {
+  seatchResultsView.renderSpinner();
+  seatchResultsView.render(model.getResultsForPage(newPageNum));
+  paginationView.render(model.state);
 }
 
 const init = function() {
   ['recipeView.load', 'recipeView.hashchange'].forEach(event => eventStore.subscribe(event, controlRecipe));
   ['searchView.submit'].forEach(event => eventStore.subscribe(event, controlSearch));
+  ['paginationView.click'].forEach(event => eventStore.subscribe(event, moveToNewPage));
 }
 
 init();

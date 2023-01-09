@@ -10,7 +10,7 @@
 
     display: grid;
     grid-template-rows: 10rem minmax(100rem, auto);
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: minmax(30%, 1fr) minmax(70%, 2fr);
     grid-template-areas:
     'head head'
     'list recipe';
@@ -21,7 +21,7 @@
         grid-template-rows: 10rem 1fr 2fr;
         grid-template-areas:
         'head head'
-        'list'
-        'recipe';
+        'list list' 
+        'recipe recipe';
     }
 }

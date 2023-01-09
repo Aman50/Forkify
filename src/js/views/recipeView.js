@@ -1,80 +1,28 @@
 import icons from "url:../../img/icons.svg";
+import View from './view.js';
+
 import { Fraction } from 'fraction.js';
 import eventStore from '../pubSub.js';
 
-class RecipeView {
-  #parentEl = document.querySelector(".recipe");
-  #data;
-  #error = 'An Error occurred while fetching the recipe.';
-  #message = 'Start by searching for a recipe or an ingredient. Have fun!';
+class RecipeView extends View {
+
 
   constructor() {
+    super(document.querySelector(".recipe"),
+    'An Error occurred while fetching the recipe.',
+    'Start by searching for a recipe or an ingredient. Have fun!');
       ['load', 'hashchange'].forEach(ev => window.addEventListener(ev, eventStore.publish.bind(eventStore, `recipeView.${ev}`)));
   }
 
-  render(recipe) {
-    this.#data = recipe;
-    const recipeEl = this.#constructHTML();
-    this.clear();
-    this.#parentEl.insertAdjacentHTML("afterbegin", recipeEl);
-  }
 
-  clear() {
-    this.#parentEl.innerHTML = "";
-  }
-
-  renderSpinner() {
-    const spinnerEl = `
-            <div class="spinner">
-            <svg>
-                <use href="${icons}#icon-loader"></use>
-            </svg>
-            </div>
-        `;
-    this.clear();
-    this.#parentEl.insertAdjacentHTML("afterbegin", spinnerEl);
-  }
-
-  renderMessage(message = this.#message) {
-    const messageEl = `
-        <div class="message">
-          <div>
-            <svg>
-              <use href="${icons}#icon-smile"></use>
-            </svg>
-          </div>
-          <p>${message}</p>
-        </div>
-        `;
-
-    this.clear();
-    this.#parentEl.insertAdjacentHTML("afterbegin", messageEl);
-  }
-
-  renderError(error = this.#error) {
-    const errorEl = `
-      <div class="error">
-        <div>
-            <svg>
-                <use href="${icons}#icon-alert-triangle"></use>
-            </svg>
-        </div>
-        <p>${error.status === 400 ? 'Please check the recipe ID' : error}</p>
-      </div>
-    `;
-
-    this.clear();
-    this.#parentEl.insertAdjacentHTML("afterbegin", errorEl);
-  }
-
-  #constructHTML() {
+  _constructHTML() {
     return `
           <figure class="recipe__fig">
-            <img src="${this.#data.imageUrl}" alt=">${
-      this.#data.title
+            <img src="${this._data.imageUrl}" alt=">${
+      this._data.title
     }" class="recipe__img">
             <h1 class="recipe__title">
-                <span>${this.#data.title}</span>
+                <span>${this._data.title}</span>
             </h1>
           </figure>
       
@@ -91,7 +39,7 @@ class RecipeView {
                   <use href="${icons}#icon-users"></use>
                 </svg>
                 <span class="recipe__info-data recipe__info-data--people">${
-                  this.#data.servings
+                  this._data.servings
                 }</span>
                 <span class="recipe__info-text">servings</span>
                 <div class="recipe__info-buttons">
@@ -121,7 +69,7 @@ class RecipeView {
           <div class="recipe__ingredients">
             <h2 class="heading--2">Recipe ingredients</h2>
             <ul class="recipe__ingredient-list">
-              ${this.#data.ingredients.map(ingredient => this.#constructIngredientHTML(ingredient)).join("")}
+              ${this._data.ingredients.map(ingredient => this._constructIngredientHTML(ingredient)).join("")}
             </ul>
           </div>
           <div class="recipe__directions">
@@ -129,13 +77,13 @@ class RecipeView {
             <p class="recipe__directions-text">
               This recipe was carefully designed and tested by
               <span class="recipe__publisher">${
-                this.#data.publisher
+                this._data.publisher
               }</span>. Please check out
               directions at their website.
             </p>
             <a
               class="btn--small recipe__btn"
-              href="${this.#data.sourceUrl}"
+              href="${this._data.sourceUrl}"
               target="_blank"
             >
               <span>Directions</span>
@@ -147,7 +95,7 @@ class RecipeView {
         `;
   }
 
-  #constructIngredientHTML(ingredient) {
+  _constructIngredientHTML(ingredient) {
     return `
         <li class="recipe__ingredient">
           <svg class="recipe__icon">

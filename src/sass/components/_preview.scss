@@ -57,16 +57,16 @@
   &__data {
     display: grid;
     width: 100%;
-    // grid-template-columns: 1fr 2rem;
-    // row-gap: 0.1rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    // align-items: center;
+    grid-template-columns: 1fr 2rem;
+    row-gap: 0.1rem;
+    // display: flex;
+    // flex-direction: column;
+    // justify-content: center;
+    align-items: center;
   }
 
   &__title {
-    // grid-column: 1/-1;
+    grid-column: 1/-1;
     font-size: 1.45rem;
     color: $color-primary;
     text-transform: uppercase;
