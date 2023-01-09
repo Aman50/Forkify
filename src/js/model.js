@@ -32,14 +32,11 @@ export const fetchRecipe = async function (recipeId) {
       delete recipe.cooking_time;
     }
 
-    const index = state.bookmarks.findIndex(bookmark => bookmark.id === recipe.id);
 
-    if (index === -1) {
-      recipe.bookmarked = false;
-    }
-
-    if (index !== -1) {
+    if (state.bookmarks.some(bookmark => bookmark.id === recipe.id)) {
       recipe.bookmarked = true;
+    } else {
+      recipe.bookmarked = false;
     }
 
     state.recipe = recipe;
