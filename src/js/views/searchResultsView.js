@@ -11,7 +11,8 @@ class SearchResultsView extends View {
     }
 
     _constructHTML() {
-        const id = document.location.hash.slice(1);
+        const id = window.location.hash.slice(1);
+        
         return this._data.map(result => `
             <li class="preview">
                 <a href="#${result.id}" class="preview__link ${id === result.id ? "preview__link--active" : ""}">

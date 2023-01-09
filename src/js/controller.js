@@ -30,7 +30,7 @@ const controlRecipe = async function() {
     recipeView.render(model.state.recipe);
 
     // If search results, then highlight the active one, else don't render anything
-    seatchResultsView.update(null);
+    seatchResultsView.update(model.getResultsForPage());
   } catch (error) {
     recipeView.renderError(error);
   }
