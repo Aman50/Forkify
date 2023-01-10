@@ -8,6 +8,8 @@ class BookmarksView extends previewView {
       "Unable to load bookmarks, please try refreshing the page.",
       "No bookmarks yet. Find a nice recipe and bookmark it. ;)"
     );
+
+    window.addEventListener('load', eventStore.publish.bind(eventStore, 'bookmark.load', null));
   }
 
   _constructHTML() {
