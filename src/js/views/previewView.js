@@ -7,6 +7,8 @@ export default class PreviewClass extends View {
     }
 
     _constructHTMLPreview(result) {
+        const id = window.location.hash.slice(1);
+
         return `
             <li class="preview">
                 <a href="#${result.id}" class="preview__link ${id === result.id ? "preview__link--active" : ""}">

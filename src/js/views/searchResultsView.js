@@ -12,7 +12,7 @@ class SearchResultsView extends previewView {
     _constructHTML() {
         const id = window.location.hash.slice(1);
         
-        return this._data.map(result => this._constructHTMLPreview).join('');
+        return this._data.map(this._constructHTMLPreview).join('');
     }
 }
 

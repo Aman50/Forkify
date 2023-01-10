@@ -97,5 +97,25 @@ export const updateServings = function(newServingSize) {
 
         state.bookmarks.push(recipe);
       }
+      saveBookmarks();
     }
   }
+
+  const saveBookmarks = function() {
+    localStorage.setItem('forkifyBookmarks', JSON.stringify(state.bookmarks));
+  }
+
+  const loadBookmarks = function() {
+    const bookmarks = localStorage.getItem('forkifyBookmarks');
+
+    // Guard clause
+    if (!bookmarks) return;
+
+    state.bookmarks = JSON.parse(bookmarks);
+  }
+
+  const init = function() {
+    loadBookmarks();
+  }
+
+  init();

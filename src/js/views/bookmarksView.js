@@ -1,4 +1,5 @@
 import previewView from "./previewView.js";
+import eventStore from '../pubSub.js';
 
 class BookmarksView extends previewView {
   constructor() {

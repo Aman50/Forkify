@@ -82,12 +82,17 @@ const controlBookmark = function(recipe) {
   BookmarksView.render(model.state.bookmarks);
 }
 
+const loadBookmarks = function() {
+  bookmarksView.render(model.state.bookmarks);
+}
+
 const init = function() {
   ['recipeView.load', 'recipeView.hashchange'].forEach(event => eventStore.subscribe(event, controlRecipe));
   ['searchView.submit'].forEach(event => eventStore.subscribe(event, controlSearch));
   ['paginationView.click'].forEach(event => eventStore.subscribe(event, controlPaginationNewPage));
   ['servings.update'].forEach(event => eventStore.subscribe(event, controlServings));
   ['bookmark.click'].forEach(event => eventStore.subscribe(event, controlBookmark));
+  loadBookmarks();
 }
 
 init();
