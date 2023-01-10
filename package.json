@@ -4,6 +4,7 @@
   "description": "Find the recipe you love",
   "scripts": {
     "start": "parcel index.html",
+    "watch": "parcel watch index.html",
     "build": "parcel build index.html"
   },
   "repository": {

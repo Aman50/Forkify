@@ -14,30 +14,11 @@ export const state = {
 
 export const fetchRecipe = async function (recipeId) {
   try {
-    const res = await helper.submitGetRequest(
-      `${config.API_URL}${recipeId}`,
-      10
+    const res = await helper.AJAXRequest(
+      `${config.API_URL}${recipeId}?key=${config.KEY}`
     );
     const { recipe } = res.data;
-    if (Object.keys(recipe).includes("image_url")) {
-      recipe.imageUrl = recipe.image_url;
-      delete recipe.image_url;
-    }
-    if (Object.keys(recipe).includes("source_url")) {
-      recipe.sourceUrl = recipe.source_url;
-      delete recipe.source_url;
-    }
-    if (Object.keys(recipe).includes("cooking_time")) {
-      recipe.cookingTime = recipe.cooking_time;
-      delete recipe.cooking_time;
-    }
-
-
-    if (state.bookmarks.some(bookmark => bookmark.id === recipe.id)) {
-      recipe.bookmarked = true;
-    } else {
-      recipe.bookmarked = false;
-    }
+   formatRecipe(recipe);
 
     state.recipe = recipe;
   } catch (error) {
@@ -45,10 +26,31 @@ export const fetchRecipe = async function (recipeId) {
   }
 };
 
+const formatRecipe = function(recipe) {
+  if (Object.keys(recipe).includes("image_url")) {
+    recipe.imageUrl = recipe.image_url;
+    delete recipe.image_url;
+  }
+  if (Object.keys(recipe).includes("source_url")) {
+    recipe.sourceUrl = recipe.source_url;
+    delete recipe.source_url;
+  }
+  if (Object.keys(recipe).includes("cooking_time")) {
+    recipe.cookingTime = recipe.cooking_time;
+    delete recipe.cooking_time;
+  }
+
+  if (state.bookmarks.some(bookmark => bookmark.id === recipe.id)) {
+    recipe.bookmarked = true;
+  } else {
+    recipe.bookmarked = false;
+  }
+}
+
 
 export const fetchSearchResults = async function(query) {
   try {
-    const res = await helper.submitGetRequest(`${config.API_URL}?search=${query}`);
+    const res = await helper.AJAXRequest(`${config.API_URL}?search=${query}&key=${config.KEY}`);
     state.search.query = query;
     state.search.results = res.data.recipes.map(result => {
       const returnVal = result;
@@ -112,6 +114,55 @@ export const updateServings = function(newServingSize) {
     if (!bookmarks) return;
 
     state.bookmarks = JSON.parse(bookmarks);
+  }
+
+  export const uploadRecipe = async function(data) {
+    try {
+      if (!data) return;
+
+      const ingredients = createIngredientArr(data);
+
+      const dataToBeSent = {
+        title: data.title,
+        image_url: data.image,
+        servings: data.servings,
+        source_url: data.sourceUrl,
+        publisher: data.publisher,
+        cooking_time: data.cookingTime,
+        ingredients
+      };
+
+      const response = await helper.AJAXRequest(`${config.API_URL}?key=${config.KEY}`, dataToBeSent);
+
+      const {recipe} = response.data;
+      formatRecipe(recipe);
+      
+      state.recipe = recipe;
+
+      toggleBookmark(state.recipe);
+    } catch (error) {
+
+    }
+  }
+
+  const createIngredientArr = function(recipe) {
+    try {
+      return Object.entries(recipe)
+      .filter(entry => entry[0].startsWith('ingredient') && entry[1].trim() !== '')
+      .map(entry => {
+        const ingredient = entry[1].trim().split(',');
+        if (ingredient.length !== 3)  throw new Error('Please check the format of ingredients again');
+        const [quantity, unit, description] = ingredient;
+        return {
+          quantity: +quantity,
+          unit,
+          description
+        }
+      });
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   }
 
   const init = function() {

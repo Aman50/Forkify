@@ -1,15 +1,15 @@
 import recipeView from './views/recipeView.js';
 import searchView from './views/searchView.js';
 import seatchResultsView from './views/searchResultsView.js';
-import paginationView from './views/paginationView';
-import BookmarksView from './views/bookmarksView.js';
-
+import paginationView from './views/paginationView.js';
+import bookmarksView from './views/bookmarksView.js';
+import uploadRecipeView from './views/uploadRecipeView.js';
 import * as model from './model.js';
 import eventStore from './pubSub.js';
+import * as config from './config.js';
 
 import "core-js/stable";
 import "regenerator-runtime/runtime";
-import bookmarksView from './views/bookmarksView.js';
 
 // HMR
 // if (module.hot) {
@@ -79,11 +79,41 @@ const controlBookmark = function(recipe) {
   recipeView.update(model.state.recipe);
 
   // 3) Updating the bookmarks view
-  BookmarksView.render(model.state.bookmarks);
+  bookmarksView.render(model.state.bookmarks);
 }
 
 const loadBookmarks = function() {
   bookmarksView.render(model.state.bookmarks);
+}
+
+const controlUploadRecipe = async function(dataView) {
+  try {
+    // 0. Render Spinner
+    uploadRecipeView.renderSpinner();
+
+    const data = Object.fromEntries(dataView);
+    
+    // 1. Upload recipe
+    await model.uploadRecipe(data);
+
+    // 2. Render recipe
+    recipeView.render(model.state.recipe);
+
+    // 3. Render Success Message
+    uploadRecipeView.renderMessage('Upload successful :)');
+
+    // 4. Update bookmarks
+    bookmarksView.render(model.state.bookmarks);
+
+    // 5. Update the ID in the browser
+    window.history.pushState('', '', `#${model.state.recipe.id}`);
+
+    // 6. Close Modal
+    setTimeout((e) => uploadRecipeView.toggleUploadModal(), config.UPLOAD_SUCCESS_CLOSE_TIME * 1000);
+
+  } catch(error) {
+    uploadRecipeView.renderError(error);
+  }
 }
 
 const init = function() {
@@ -93,6 +123,7 @@ const init = function() {
   ['paginationView.click'].forEach(event => eventStore.subscribe(event, controlPaginationNewPage));
   ['servings.update'].forEach(event => eventStore.subscribe(event, controlServings));
   ['bookmark.click'].forEach(event => eventStore.subscribe(event, controlBookmark));
+  ['uploadRecipeView.submit'].forEach(event => eventStore.subscribe(event, controlUploadRecipe));
 }
 
 init();
