@@ -2,17 +2,19 @@ import recipeView from './views/recipeView.js';
 import searchView from './views/searchView.js';
 import seatchResultsView from './views/searchResultsView.js';
 import paginationView from './views/paginationView';
+import BookmarksView from './views/bookmarksView.js';
 
 import * as model from './model.js';
 import eventStore from './pubSub.js';
 
 import "core-js/stable";
 import "regenerator-runtime/runtime";
+import bookmarksView from './views/bookmarksView.js';
 
 // HMR
-if (module.hot) {
-  module.hot.accept();
-}
+// if (module.hot) {
+//   module.hot.accept();
+// }
 
 const controlRecipe = async function() {
   try {
@@ -31,6 +33,9 @@ const controlRecipe = async function() {
 
     // If search results, then highlight the active one, else don't render anything
     seatchResultsView.update(model.getResultsForPage());
+
+    //Updating active item in Bookmarks view
+    bookmarksView.update(model.state.bookmarks);
   } catch (error) {
     recipeView.renderError(error);
   }
@@ -67,9 +72,14 @@ const controlServings = function(newServingSize) {
 
 
 const controlBookmark = function(recipe) {
+  // 1) Toggling bookmark on the recipe
   model.toggleBookmark(recipe);
 
+  // 2) Updating the recipe view
   recipeView.update(model.state.recipe);
+
+  // 3) Updating the bookmarks view
+  BookmarksView.render(model.state.bookmarks);
 }
 
 const init = function() {
