@@ -1,9 +1,9 @@
 import View from './view.js';
 import icons from 'url:../../img/icons.svg';
 
-class PreviewClass extends View {
-    constructor() {
-        super('', '', '');
+export default class PreviewClass extends View {
+    constructor(parentEl, error, message) {
+        super(parentEl, error, message);
     }
 
     _constructHTMLPreview(result) {
@@ -29,5 +29,3 @@ class PreviewClass extends View {
         `;
     }
 }
-
-export default new PreviewClass();
